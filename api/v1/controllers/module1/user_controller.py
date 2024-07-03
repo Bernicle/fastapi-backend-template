@@ -11,7 +11,6 @@ from .....config.database  import get_db
 router = APIRouter()
 
 def hash_password(password):
-   password = "MySecretPassword" 
    password_bytes = password.encode('utf-8')
    hashed_bytes = hashpw(password_bytes, gensalt())
    return hashed_bytes.decode('utf-8')
@@ -52,3 +51,33 @@ async def create_user(item: user_create_schema, db: Session = Depends(get_db)):
     db.refresh(new_user)  # Refresh the object to include the newly generated ID
 
     return new_user
+
+@router.put("/{user_id}", response_model=user_schema, responses={404: {"model": InvalidIDResponse}})
+async def update_user(user_id: int, user_data: user_update_schema, db: Session = Depends(get_db)):
+    # Retrieve the item by ID
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="Item not found")
+
+    # Update the item's attributes with the provided data
+    for field, value in user_data.dict(exclude_unset=True).items():
+        setattr(user, field, value)  # Update specific attributes as needed
+    
+    db.commit()
+    db.refresh(user)  # Refresh for updated values
+
+    return user
+
+@router.delete("/{user_id}", status_code=status.HTTP_204_NO_CONTENT, responses={404: {"model": InvalidIDResponse}})
+async def delete_user(user_id: int, db: Session = Depends(get_db)):
+    # Retrieve the item by ID
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User Id not found")
+
+    # Delete the item from the database
+    db.delete(user)
+    db.commit()
+
+    # Return no content (204) on successful deletion
+    return None

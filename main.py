@@ -2,7 +2,7 @@ from fastapi import FastAPI, Depends
 from sqlalchemy.orm import Session
 
 from .api.v1.routers.main_route import router as v1_router
-from .config.database import get_db, Base
+from .config.database import get_db, engine, Base
 
 app = FastAPI()
 
