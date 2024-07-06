@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from ...models.module1.item_model import Item
 from ...schemas.module1.item_schema import Item as item_schema, CreateItem as item_create_schema, UpdateItem as item_update_schema
 from ...schemas.Invalid_id_schema import InvalidIDResponse
-from .....config.database  import get_db
+from config.database  import get_db
 
 router = APIRouter()
 

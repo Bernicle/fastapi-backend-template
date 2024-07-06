@@ -6,15 +6,11 @@ from sqlalchemy.orm import Session
 from ...models.module1.user_model import User
 from ...schemas.module1.user_schema import User as user_schema, CreateUser as user_create_schema, UpdateUser as user_update_schema
 from ...schemas.Invalid_id_schema import InvalidIDResponse
-from .....config.database  import get_db
+from config.database  import get_db
+
+from helper.security import hash_password, verify_password
 
 router = APIRouter()
-
-def hash_password(password):
-   password_bytes = password.encode('utf-8')
-   hashed_bytes = hashpw(password_bytes, gensalt())
-   return hashed_bytes.decode('utf-8')
-
 
 @router.get("/", response_model=list[user_schema])
 async def get_users(db: Session = Depends(get_db)):

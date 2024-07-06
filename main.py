@@ -1,8 +1,11 @@
 from fastapi import FastAPI, Depends
 from sqlalchemy.orm import Session
 
-from .api.v1.routers.main_route import router as v1_router
-from .config.database import get_db, engine, Base
+import sys, os
+sys.path.insert(1,os.path.dirname(os.path.abspath(__file__)))
+
+from api.v1.routers.main_route import router as v1_router
+from config.database import get_db, engine, Base
 
 app = FastAPI()
 
