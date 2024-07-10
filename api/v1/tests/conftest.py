@@ -1,7 +1,10 @@
+# Initialize the Database First Before anything else.
+from config.database import initialize_setup
+initialize_setup("sqlite:///foo.db")
+
 import pytest
 from main import app  # Import the FastAPI app
 from fastapi.testclient import TestClient
-
 import sys, os
 sys.path.insert(1,os.path.dirname(os.path.abspath(__file__)))
 
