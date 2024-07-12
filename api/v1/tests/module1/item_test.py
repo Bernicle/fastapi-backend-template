@@ -1,3 +1,7 @@
+#############################################################################
+# Happy Scenario
+#############################################################################
+
 def test_get_items_success(test_client):
     response = test_client.get("/api/v1/module1/items")
     assert response.status_code == 200, "The expected return status in not 200"
@@ -104,3 +108,34 @@ def test_create_and_delete(test_client, test_faker):
     assert response.status_code == 400, "The status must be 400, since the data related to the provided ID is already deleted."
     lastest_data = response.json()
     assert "detail" in lastest_data.keys(), "the Key detail must be return to display the details of error."
+
+#############################################################################
+# Error Handling
+#############################################################################
+
+def test_register_with_missing_column1(test_client, test_faker):
+    
+    product_name1 = test_faker.ecommerce_name()    
+    #Missing column 'name'
+    pay_load1 = {
+        "description":product_name1,
+        "price":test_faker.ecommerce_price()
+    }
+    
+    product_name2 = test_faker.ecommerce_name()    
+    #Missing column 'name'
+    pay_load2 = {
+        'name': product_name2,
+        "description":product_name2
+    }
+
+    response1 = test_client.post("/api/v1/module1/items", json=pay_load1)
+    assert response1.status_code == 422, "Expected Status Code 422 is not received."
+    created_data = response1.json()
+    assert 'name' in str(created_data), "The error message should indicate that the 'name' column is missing"
+
+    response2 = test_client.post("/api/v1/module1/items", json=pay_load2)
+    assert response2.status_code == 422, "Expected Status Code 422 is not received."
+    created_data = response2.json()
+    assert 'price' in str(created_data), "The error message should indicate that the 'price' column is missing"
+    
