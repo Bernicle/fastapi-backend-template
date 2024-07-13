@@ -27,7 +27,7 @@ async def get_item_by_id(item_id: int, db: Session = Depends(get_db)):
 @router.post("/", response_model=item_schema, status_code=status.HTTP_201_CREATED)
 async def create_item(item: item_create_schema, db: Session = Depends(get_db)):
     # Create a new Item instance using Pydantic data
-    new_item = Item(**item.dict())  # Unpack the Pydantic data
+    new_item = Item(**item.model_dump())  # Unpack the Pydantic data
     db.add(new_item)
     db.commit()
     db.refresh(new_item)  # Refresh the object to include the newly generated ID
@@ -42,7 +42,7 @@ async def update_item(item_id: int, item_data: item_update_schema, db: Session =
         raise HTTPException(status_code=404, detail="Item not found")
 
     # Update the item's attributes with the provided data
-    for field, value in item_data.dict(exclude_unset=True).items():
+    for field, value in item_data.model_dump(exclude_unset=True).items():
         setattr(item, field, value)  # Update specific attributes as needed
     
     db.commit()

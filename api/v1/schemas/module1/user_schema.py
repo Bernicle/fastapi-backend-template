@@ -1,5 +1,5 @@
 from typing_extensions import Annotated
-from pydantic import BaseModel, StringConstraints
+from pydantic import BaseModel, StringConstraints, ConfigDict
 
 class UserBase(BaseModel):
     username: str
@@ -19,9 +19,8 @@ class Login(BaseModel):
     password: str
 
 class User(UserBase):
+    model_config = ConfigDict(from_attributes = True)
     id: int
-    class Config:
-        orm_mode = True
 
 class UpdateUser(UserBase):
     first_name : str | None = None

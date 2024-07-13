@@ -37,7 +37,7 @@ async def create_user(item: user_create_schema, db: Session = Depends(get_db)):
         )
     
     salted_password = hash_password(item.password)
-    user_dict = item.dict()
+    user_dict = item.model_dump()
     del user_dict['password']
     # Create a new Item instance using Pydantic data
     new_user = User(**user_dict)  # Unpack the Pydantic data
@@ -56,7 +56,7 @@ async def update_user(user_id: int, user_data: user_update_schema, db: Session =
         raise HTTPException(status_code=404, detail="Item not found")
 
     # Update the item's attributes with the provided data
-    for field, value in user_data.dict(exclude_unset=True).items():
+    for field, value in user_data.model_dump(exclude_unset=True).items():
         setattr(user, field, value)  # Update specific attributes as needed
     
     db.commit()

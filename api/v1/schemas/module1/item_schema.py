@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 class ItemBase(BaseModel):
     name: str
@@ -9,9 +9,8 @@ class CreateItem(ItemBase):
     pass
 
 class Item(ItemBase):
+    model_config = ConfigDict(from_attributes = True)
     id: int
-    class Config:
-        orm_mode = True
 
 class UpdateItem(ItemBase):
     name : str | None = None
