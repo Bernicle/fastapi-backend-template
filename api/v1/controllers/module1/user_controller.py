@@ -32,7 +32,7 @@ async def create_user(item: user_create_schema, db: Session = Depends(get_db)):
     
     if existing_user:
         raise HTTPException(
-            status=status.HTTP_400_BAD_REQUEST,
+            status_code=status.HTTP_400_BAD_REQUEST,
             detail="Username or mobile number already exists"
         )
     
