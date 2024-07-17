@@ -14,10 +14,6 @@ class CreateUser(UserBase):
     password:str
     pass
 
-class Login(BaseModel):
-    username: str
-    password: str
-
 class User(UserBase):
     model_config = ConfigDict(from_attributes = True)
     id: int
