@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from datetime import timedelta
+import os
 
 from ..models.module1.user_model import User
 from ..schemas.module1.user_schema import User as user_schema
@@ -33,9 +34,14 @@ async def login(login_detail: OAuth2PasswordRequestForm = Depends(), db: Session
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Failed to Login"
         )
-
-    return { 
-        "user": user_found, 
-        "access_token": "Lorem Ipsum Token Here.",
+    setting = {
+        "SECRET_KEY":os.getenv("SECRET_KEY"),
+        "ALGORITHM": os.getenv("ALGORITHM")
+    }
+    user_detail = user_schema(**user_found.__dict__).model_dump()
+    access_token = create_access_token(user_detail, expires_delta=timedelta(minutes=15), SECRET_SETTING=setting)
+    return {
+        "user": user_found.__dict__, 
+        "access_token": access_token,
         "token_type":"bearer"
     }

@@ -8,16 +8,16 @@ initialize_setup()
 from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
+import os
+from dotenv import load_dotenv, dotenv_values
 
 from api.v1.routers.main_route import router as v1_router
 
+load_dotenv()
+
 app = FastAPI()
 
-origins = [
-    "*", #Comment this before uploading to server
-    "http://localhost",
-    "http://localhost:8080",
-]
+origins = os.getenv("CORS_ORIGIN")
 
 app.add_middleware(
     CORSMiddleware,
