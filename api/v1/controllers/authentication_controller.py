@@ -39,7 +39,10 @@ async def login(login_detail: OAuth2PasswordRequestForm = Depends(), db: Session
         "ALGORITHM": os.getenv("ALGORITHM")
     }
     user_detail = user_schema(**user_found.__dict__).model_dump()
-    access_token = create_access_token(user_detail, expires_delta=timedelta(minutes=15), SECRET_SETTING=setting)
+    access_token = create_access_token({
+            "id": user_found.id
+        },
+        expires_delta=timedelta(minutes=15), SECRET_SETTING=setting)
     return {
         "user": user_found.__dict__, 
         "access_token": access_token,

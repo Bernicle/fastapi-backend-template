@@ -1,6 +1,6 @@
 # Initialize the Database First Before anything else.
 from config.database import initialize_setup
-initialize_setup("sqlite:///foo.db")
+initialize_setup("sqlite:///temp.db")
 
 from faker import Faker
 import faker_commerce
