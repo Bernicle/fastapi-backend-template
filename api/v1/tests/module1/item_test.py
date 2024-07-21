@@ -2,19 +2,21 @@
 # Happy Scenario
 #############################################################################
 
+from faker import Faker
+from fastapi.testclient import TestClient
 import pytest
 
 from api.v1.tests.authentication.authenthication_test import get_authorization_header
 
 
-def test_get_items_success(test_client):
+def test_get_items_success(test_client: TestClient):
     headers = get_authorization_header(test_client,"poncebernard123", "loremIpsum123")
     response = test_client.get("/api/v1/module1/items", headers=headers)
     assert response.status_code == 200, "The expected return status in not 200"
     data = response.json()
     assert isinstance(data, list), "Expected Return Type if in `List`"
 
-def test_basic_register(test_client, test_faker):
+def test_basic_register(test_client: TestClient, test_faker: Faker):
     product_name = test_faker.ecommerce_name()
 
     pay_load = {
@@ -35,7 +37,7 @@ def test_basic_register(test_client, test_faker):
     
     assert created_data_keys == retrieve_data_keys, "The Keys/Column Name that inserted is not same with created data."
 
-def test_many_register(test_client, test_faker):
+def test_many_register(test_client: TestClient, test_faker: Faker):
     for i in range(50):
         product_name = test_faker.ecommerce_name()
         pay_load = {
@@ -65,7 +67,7 @@ def test_many_register(test_client, test_faker):
         assert created_data_keys == retrieve_data_keys, "The Keys/Column Name that inserted is not same with created data."
         assert all({ retrieve_data[k] == created_data[k] for k in created_data})
     
-def test_create_and_update(test_client, test_faker):
+def test_create_and_update(test_client: TestClient, test_faker: Faker):
     
     product_name = test_faker.ecommerce_name()
     pay_load = {
@@ -92,7 +94,7 @@ def test_create_and_update(test_client, test_faker):
     updated_data = response.json()
     assert all(updated_data[key] == new_data[key] for key in new_data.keys()), "The return data is not updated based on new_data."
     
-def test_create_and_delete(test_client, test_faker):
+def test_create_and_delete(test_client: TestClient, test_faker: Faker):
     product_name = test_faker.ecommerce_name()
     pay_load = {
         "name":product_name, 
@@ -125,7 +127,7 @@ def test_create_and_delete(test_client, test_faker):
 # Error Handling
 #############################################################################
 
-def test_register_with_missing_column1(test_client, test_faker):
+def test_register_with_missing_column1(test_client: TestClient, test_faker: Faker):
     
     product_name1 = test_faker.ecommerce_name()    
     #Missing column 'name'
