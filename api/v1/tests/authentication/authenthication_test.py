@@ -8,6 +8,7 @@ from pydantic import ValidationError
 from sqlalchemy.orm import Session
 from api.v1.models.module1.user_model import User
 from api.v1.schemas.authentication_schema import LoginResponse
+from api.v1.services.module1.user_service import UserService, get_user_service
 from helper.security import hash_password
 from config.database  import get_db
 from urllib.parse import urlencode
@@ -15,14 +16,14 @@ from urllib.parse import urlencode
 def get_authorization_header(client: TestClient, username: str, password: str) -> dict:
     """Logs in and returns the Authorization header with Bearer token."""
     login_detail = {"username": username, "password": password}
-    response = client.post("/api/v1/login", data=urlencode(login_detail).encode("utf-8"), headers={"Content-Type": "application/x-www-form-urlencoded"})
+    response = client.post("/api/v1/login", data=urlencode(query=login_detail).encode("utf-8"), headers={"Content-Type": "application/x-www-form-urlencoded"})
     
     response.raise_for_status()
     token = response.json()["access_token"]
     return {"Authorization": f"Bearer {token}"}
 
-def test_basic_login(test_client):
-    
+def test_basic_login(test_client: TestClient):
+    #Since during conftest.py, the Initialization of Database is Redirect to temp.db, We will create a default use that we will use for every authentication in the system during testing.
     pay_load = {
         "username":"poncebernard123",
         "password":"loremIpsum123",
@@ -33,21 +34,12 @@ def test_basic_login(test_client):
         "address": None,
         "mobile_number":"09189911991"
     }
-    
-    response = test_client.post("/api/v1/module1/users", json=pay_load)
-    print(response.json())
-    
-    assert response.status_code == 201, "Failed to Create a new Record/Data."
-    created_data = response.json()
-    response = test_client.get(f"/api/v1/module1/users/{created_data.get('id')}")
-    assert response.status_code == 200, "Failed to get the data. assuming that the data we retrieve is already created."
-    retrieve_data = response.json()
-    
-    created_data_keys = set(created_data.keys())
-    retrieve_data_keys = set(retrieve_data.keys())
-    
-    assert created_data_keys == retrieve_data_keys, "The Keys/Column Name that inserted is not same with created data."
+    user_service : UserService = next(get_user_service(next(get_db())))
 
+    existing_user = user_service.are_keys_taken(pay_load["mobile_number"], pay_load["username"])
+    if (not existing_user):
+        user_service.create_user(pay_load)
+    
     login_detail = {
         "username":"poncebernard123", 
         "password":"loremIpsum123",
