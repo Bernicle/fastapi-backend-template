@@ -1,14 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException, status
-import pytest
-from sqlalchemy.orm import Session
 
 from api.v1.middlewares.auth.authentication import get_current_user
 from api.v1.schemas.module1.user_schema import User
 from api.v1.services.module1.item_service import ItemService, get_item_service
 
-from ...models.module1.item_model import Item
-from ...schemas.module1.item_schema import Item as item_schema, CreateItem as item_create_schema, UpdateItem as item_update_schema
-from ...schemas.Invalid_id_schema import InvalidIDResponse
+from api.v1.schemas.module1.item_schema import Item as item_schema, CreateItem as item_create_schema, UpdateItem as item_update_schema
+from api.v1.schemas.Invalid_id_schema import InvalidIDResponse
 from config.database  import get_db
 
 router = APIRouter()
