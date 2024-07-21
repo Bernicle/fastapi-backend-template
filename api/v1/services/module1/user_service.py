@@ -35,6 +35,12 @@ class UserService:
         self.db.refresh(new_user)  # Refresh the object to include the newly generated ID
         return new_user
     
+    
+    def are_keys_taken(self, mobile_number: str, username : str):
+        # Implement logic for fetching a specific user by ID
+        return self.db.query(User).filter(User.mobile_number  == mobile_number or User.username == username).first()
+
+
     async def get_user(self, user_id: int):
         # Implement logic for fetching a specific user by ID
         return self.db.query(User).filter(User.id  == user_id).first()
@@ -53,6 +59,22 @@ class UserService:
         self.db.commit()
         self.db.refresh(user)  # Refresh for updated values
         return user
+    
+    async def reset_password(self, user_id: int, new_password: str):
+        # Implement logic for user creation (validation, password hashing, saving to database)
+        existing_user = await self.get_user(user_id=user_id)
+        
+        if existing_user:
+            raise HTTPException(
+                status_code=400,
+                detail="Username or mobile number already exists"
+            )
+        
+        salted_password = hash_password(new_password)
+        
+        setattr(existing_user, "hash_password", salted_password)
+        self.db.commit()
+        self.db.refresh(existing_user)  # Refresh the object to include the newly generated ID
 
     async def delete_user(self, user_id: int):
         # Implement logic for deleting a user
