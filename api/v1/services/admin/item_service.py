@@ -1,8 +1,8 @@
 from fastapi import Depends, HTTPException
 from sqlalchemy.orm import Session
 
-from api.v1.models.module1.item_model import Item  # Assuming User model is in a 'models' folder
-from api.v1.schemas.module1.item_schema import CreateItem as item_create_schema 
+from api.v1.models.admin.item_model import Item  # Assuming User model is in a 'models' folder
+from api.v1.schemas.admin.item_schema import CreateItem as item_create_schema 
 from config.database import get_db  # Assuming a function to get database session
 
 class ItemService:

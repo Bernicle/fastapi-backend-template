@@ -1,8 +1,8 @@
 from fastapi import Depends, HTTPException
 from sqlalchemy.orm import Session
 
-from api.v1.models.module1.user_model import User  # Assuming User model is in a 'models' folder
-from api.v1.schemas.module1.user_schema import CreateUser as user_create_schema 
+from api.v1.models.admin.user_model import User  # Assuming User model is in a 'models' folder
+from api.v1.schemas.admin.user_schema import CreateUser as user_create_schema 
 from config.database import get_db
 from helper.security import hash_password  # Assuming a function to get database session
 

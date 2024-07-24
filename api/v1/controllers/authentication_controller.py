@@ -4,10 +4,10 @@ from sqlalchemy.orm import Session
 from datetime import timedelta
 import os
 
-from ..models.module1.user_model import User
-from ..schemas.module1.user_schema import User as user_schema
-from ..schemas.Invalid_id_schema import InvalidIDResponse
-from ..schemas.authentication_schema import LoginResponse
+from api.v1.models.admin.user_model import User
+from api.v1.schemas.admin.user_schema import User as user_schema
+from api.v1.schemas.Invalid_id_schema import InvalidIDResponse
+from api.v1.schemas.authentication_schema import LoginResponse
 from config.database  import get_db
 from helper.security import create_access_token
 

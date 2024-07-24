@@ -3,10 +3,10 @@ from bcrypt import hashpw, gensalt
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
-from api.v1.models.module1.user_model import User
-from api.v1.schemas.module1.user_schema import User as user_schema, CreateUser as user_create_schema, UpdateUser as user_update_schema
+from api.v1.models.admin.user_model import User
+from api.v1.schemas.admin.user_schema import User as user_schema, CreateUser as user_create_schema, UpdateUser as user_update_schema
 from api.v1.schemas.Invalid_id_schema import InvalidIDResponse
-from api.v1.services.module1.user_service import UserService, get_user_service
+from api.v1.services.admin.user_service import UserService, get_user_service
 from config.database  import get_db
 
 router = APIRouter()

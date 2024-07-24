@@ -6,9 +6,9 @@ from fastapi import Depends
 from fastapi.testclient import TestClient
 from pydantic import ValidationError
 from sqlalchemy.orm import Session
-from api.v1.models.module1.user_model import User
+from api.v1.models.admin.user_model import User
 from api.v1.schemas.authentication_schema import LoginResponse
-from api.v1.services.module1.user_service import UserService, get_user_service
+from api.v1.services.admin.user_service import UserService, get_user_service
 from helper.security import hash_password
 from config.database  import get_db
 from urllib.parse import urlencode
