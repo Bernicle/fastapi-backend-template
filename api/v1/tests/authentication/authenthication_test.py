@@ -16,7 +16,7 @@ from urllib.parse import urlencode
 def get_authorization_header(client: TestClient, username: str, password: str) -> dict:
     """Logs in and returns the Authorization header with Bearer token."""
     login_detail = {"username": username, "password": password}
-    response = client.post("/api/v1/login", data=urlencode(query=login_detail).encode("utf-8"), headers={"Content-Type": "application/x-www-form-urlencoded"})
+    response = client.post("/api/v1/login", content=urlencode(query=login_detail).encode("utf-8"), headers={"Content-Type": "application/x-www-form-urlencoded"})
     
     response.raise_for_status()
     token = response.json()["access_token"]
@@ -44,9 +44,9 @@ def test_basic_login(test_client: TestClient):
         "username":"poncebernard123", 
         "password":"loremIpsum123",
     }
-    response = test_client.post("/api/v1/login", data=urlencode(login_detail).encode("utf-8"), headers={"Content-Type": "application/x-www-form-urlencoded"})
+    response = test_client.post("/api/v1/login", content=urlencode(login_detail).encode("utf-8"), headers={"Content-Type": "application/x-www-form-urlencoded"})
     print(response.json())
     assert response.status_code == 200
 
-    #response = test_client.delete(f"/api/v1/module1/users/{created_data.get('id')}")
+    #response = test_client.delete(f"/api/v1/admin/users/{created_data.get('id')}")
     #assert response.status_code == 204, "Failed to delete the data."
