@@ -1,6 +1,5 @@
 import sys, os
 from dotenv import load_dotenv
-from jwt.exceptions import ExpiredSignatureError
 
 sys.path.insert(1,os.path.dirname(os.path.abspath(__file__)))
 # Initialize the Database First Before anything else.
@@ -9,8 +8,8 @@ initialize_setup()
 
 from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
-from api.v1.controllers.exception.handler.expire_signature_handler import expire_signature_handler
 from api.v1.routers.main_route import router as v1_router
+from api.v1.exception.consolidated_handler import handlers as list_of_handler
 
 load_dotenv()
 
@@ -27,7 +26,10 @@ app.add_middleware(
 )
 
 app.include_router(v1_router, dependencies=[Depends(get_db)])
-app.add_exception_handler(ExpiredSignatureError, expire_signature_handler)
+
+# Load All Exception with it own Custom Handler 
+for handler in list_of_handler:
+    app.add_exception_handler(handler["exception"], handler["handler"])
 
 if __name__ == "__main__":
     import uvicorn
