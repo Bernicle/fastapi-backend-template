@@ -1,16 +1,15 @@
 import sys, os
-sys.path.insert(1,os.path.dirname(os.path.abspath(__file__)))
+from dotenv import load_dotenv
+from jwt.exceptions import ExpiredSignatureError
 
+sys.path.insert(1,os.path.dirname(os.path.abspath(__file__)))
 # Initialize the Database First Before anything else.
-from config.database import get_db, initialize_setup, engine, Base
+from config.database import get_db, initialize_setup
 initialize_setup()
 
 from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
-from sqlalchemy.orm import Session
-import os
-from dotenv import load_dotenv, dotenv_values
-
+from api.v1.controllers.exception.handler.expire_signature_handler import expire_signature_handler
 from api.v1.routers.main_route import router as v1_router
 
 load_dotenv()
@@ -28,6 +27,7 @@ app.add_middleware(
 )
 
 app.include_router(v1_router, dependencies=[Depends(get_db)])
+app.add_exception_handler(ExpiredSignatureError, expire_signature_handler)
 
 if __name__ == "__main__":
     import uvicorn
